@@ -80,7 +80,6 @@ export class ModuleFactory {
         return this.getFactoryByString(name);
     }
 
-
     getFactoryByString(name: string): ViviComponentFactory<Component> | ViviServiceFactory<Service> {
         const matches = name.match(/(.*)(Component|Service)$/);
         if (matches && matches[2] && matches[2] === 'Service') {
