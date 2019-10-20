@@ -34,20 +34,12 @@ export abstract class Component {
         try {
             this.template = require('vivi_application/' + directory + '.component.html');
         } catch (e) {
-            // A vaild error, throw it back out to sea
-            if (e.code !== 'MODULE_NOT_FOUND') {
-                throw e;
-            }
-            this.template = '';
+             this.template = '';
         }
 
         try {
             this.style = require('vivi_application/' + directory + '.component.scss');
         } catch (e) {
-            // A vaild error, throw it back out to sea
-            if (e.code !== 'MODULE_NOT_FOUND') {
-                throw e;
-            }
             this.style = '';
         }
     }
