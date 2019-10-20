@@ -28,6 +28,14 @@ describe('ApplicationEventService', () => {
             service.createListener('test', null);
             expect(service.eventRegistry.size).toEqual(1);
         });
+
+        it('should automatically send through event if options.getCurrentValue flag is true', (done) => {
+            const service = new ApplicationEventService();
+            service.createListener('test', () => {
+                expect(true).toBeTruthy();
+                done();
+            }, { getCurrentValue: true });
+        });
     });
 
     describe('Send Event', () => {
