@@ -2,8 +2,24 @@ import { ParseEngine } from '../parse-engine.class';
 import { attributeList } from './attribute-list';
 
 describe('Parse Engine', () => {
+    afterEach(() => {
+        // Clear the document
+        for (let i = 0; i < document.body.children.length; i++) {
+            document.body.children.item(i).remove();
+        }
+    });
+
     it('should work', () => {
         const node = document.createElement('div');
+        const actual = ParseEngine.parseNode(node, {});
+
+        expect(actual).toBeTruthy();
+    });
+
+    it('should work even if an element is just text', () => {
+        const node = document.createElement('div');
+        node.textContent = 'test';
+
         const actual = ParseEngine.parseNode(node, {});
 
         expect(actual).toBeTruthy();

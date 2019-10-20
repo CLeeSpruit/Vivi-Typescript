@@ -63,8 +63,10 @@ export class ParseEngine {
 
     private static buildAttributeList(node: Node, attributes: Set<string> = new Set<string>()): Set<string> {
         const attr = (<HTMLElement>node).attributes;
-        for (let i = 0; i < attr.length; i++) {
-            attributes.add(attr.item(i).name);
+        if (attr){
+            for (let i = 0; i < attr.length; i++) {
+                attributes.add(attr.item(i).name);
+            }
         }
 
         node.childNodes.forEach(child => {
