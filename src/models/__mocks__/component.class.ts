@@ -42,7 +42,7 @@ export class MockWithElementsComponent extends Component {
 
     constructor() {
         super();
-        this.template = '<span class="test"></span><input type="button" class="test">';
+        this.template = '<span class="test"></span><input type="button" class="test" />';
     }
 
     handleClick() {
