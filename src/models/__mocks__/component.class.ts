@@ -27,6 +27,14 @@ export class MockWithParamsComponent extends Component {
     params: MockComponentParams;
 }
 
+export class MockWithParamsInTemplate extends Component {
+    data: MockComponentParams;
+    constructor() {
+        super();
+        this.template = '<span v-innerHTML="this.name"></span>';
+    }
+}
+
 export class MockWithElementsComponent extends Component {
     @ViviElement({selector: 'input.test', eventType: EventTypes.click, handlerFnName: 'handleClick'}) button: HTMLButtonElement;
     @ViviElement({selector: 'span.test'}) testingText: HTMLSpanElement;
@@ -34,7 +42,7 @@ export class MockWithElementsComponent extends Component {
 
     constructor() {
         super();
-        this.template = '<span class="test"></span><input type="button" class="test" />';
+        this.template = '<span class="test"></span><input type="button" class="test">';
     }
 
     handleClick() {
