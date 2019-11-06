@@ -5,6 +5,7 @@
     "main": "index.js",
     "scripts": {
         "build": "npm run flush && webpack-cli",
+        "build:stats": "npm run flush && webpack-cli --json > stats.json",
         "flush": "rm -r ./dist || true",
         "nuke": "rm -r ./node_modules",
         "test": "jest",
@@ -28,20 +29,20 @@
     },
     "homepage": "https://github.com/CassandraSpruit/Vivi#readme",
     "devDependencies": {
-        "@types/jest": "^24.0.16",
-        "@types/node": "^12.6.8",
+        "@types/jest": "^24.0.22",
+        "@types/node": "^12.12.6",
         "codecov": "^3.6.1",
-        "jest": "^24.8.0",
+        "flyd": "^0.2.8",
+        "jest": "^24.9.0",
         "ts-jest": "^24.0.2",
-        "ts-loader": "^6.0.4",
+        "ts-loader": "^6.2.1",
         "tsconfig-paths-webpack-plugin": "^3.2.0",
-        "typescript": "^3.5.3",
-        "uuid": "^3.3.2",
-        "webpack": "^4.38.0",
-        "webpack-cli": "^3.3.6"
+        "typescript": "^3.7.2",
+        "uuid": "^3.3.3",
+        "webpack": "^4.41.2",
+        "webpack-cli": "^3.3.10"
     },
     "dependencies": {
-        "reflect-metadata": "^0.1.13",
-        "rxjs": "^6.5.2"
+        "reflect-metadata": "^0.1.13"
     }
 }

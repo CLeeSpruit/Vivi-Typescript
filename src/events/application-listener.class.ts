@@ -1,13 +1,12 @@
-import { Observable, Subscription } from 'rxjs';
 import { ApplicationEvent } from './';
 
 export class ApplicationListener {
-    private subscription: Subscription;
+    private stream: flyd.Stream<any>;
 
     constructor(
         private eventName: string,
         callback: (event: ApplicationEvent) => any,
-        obs: Observable<ApplicationEvent>,
+        str: flyd.Stream<ApplicationEvent>,
         options?: { emitEvent: boolean }
     ) {
         const cb = (event: ApplicationEvent) => {
@@ -22,7 +21,7 @@ export class ApplicationListener {
             }
         };
 
-        this.subscription = obs.subscribe(cb);
+        this.stream = str.map(cb);
     }
 
     // Alias for close to make it work better with the Listener class
@@ -31,6 +30,6 @@ export class ApplicationListener {
     }
 
     close() {
-        this.subscription.unsubscribe();
+        this.stream.end(true);
     }
 }
