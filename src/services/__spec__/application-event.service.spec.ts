@@ -1,6 +1,5 @@
 import { ApplicationEventService } from '../application-event.service';
 import { ApplicationListener, ApplicationEvent } from '../../events';
-import { map } from 'rxjs/operators';
 
 describe('ApplicationEventService', () => {
     it('should init', () => {
@@ -41,10 +40,10 @@ describe('ApplicationEventService', () => {
         
         it('should add pipes if provided in options.pipe', (done) => {
             const service = new ApplicationEventService();
-            const pipe = map<ApplicationEvent, ApplicationEvent>((value) => {
+            const pipe = (value) => {
                 value.data = 2;
                 return value;
-            });
+            };
 
             service.createListener('test', (data) => {
                 expect(data).toEqual(2);

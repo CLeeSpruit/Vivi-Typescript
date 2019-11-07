@@ -4,7 +4,7 @@ import { stream } from 'flyd';
 
 export interface ListenerOptions {
     getCurrentValue?: boolean; // If event has already been triggered, get data from last event
-    // pipe?: OperatorFunction<ApplicationEvent, ApplicationEvent>; // Accepts rxjs operator functions to customize observable
+    pipe?: (input: ApplicationEvent) => ApplicationEvent;
 }
 
 export class ApplicationEventService extends Service {
@@ -41,9 +41,11 @@ export class ApplicationEventService extends Service {
         // }
 
         // Include other pipes if provided
-        // if (options && options.pipe) {
-        //     obs = obs.pipe<ApplicationEvent>(options.pipe);
-        // }
+
+
+        if (options && options.pipe) {
+            // sub = sub.pipe<ApplicationEvent>(op => );
+        }
 
         // Create listener
         return new ApplicationListener(eventName, callback, sub);
