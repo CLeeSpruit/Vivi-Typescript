@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-stage="./dist"
 
 echo "Switching to master branch and grabbing latest..."
 git checkout master
@@ -12,27 +11,7 @@ do
     break
 done
 
-echo "Building and staging files..."
-npm run dist
-
-# Copy over newly edited package.json, Readme.md for npm
-cp package.json $stage
-cp README.md $stage
-
-cd $stage
+echo "Publishing..."
 npm publish --scope=public
-cd ../
 
 echo "Publish complete!"
-echo "Push changes to github?"
-select push in "Yes" "No"; 
-do
-    case $push in
-        Yes) git push && git push --tags
-        break
-        ;;
-        No) echo "Skipping push. Don't forget to do it yourself!"
-        break
-        ;;
-    esac
-done
