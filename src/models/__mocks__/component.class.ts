@@ -2,6 +2,12 @@ import { Component } from '../component.class';
 import { MockComponentParams } from './component-params.class';
 import { ViviElement } from '../../decorators/element.decorator';
 import { EventTypes } from '../../events';
+import { ModuleFactory, ViviComponentFactory } from 'factory';
+import { ComponentParams } from 'models/component-params.class';
+
+
+
+
 
 export class MockComponent extends Component {
     constructor() {
@@ -13,6 +19,13 @@ export class MockWithTemplateComponent extends Component {
     constructor() {
         super();
         this.template = 'test';
+    }
+}
+
+export class MockWithStyleComponent extends Component {
+    constructor() {
+        super();
+        this.style = 'a { color: red }';
     }
 }
 

@@ -1,69 +1,49 @@
 import { ViviServiceFactory } from './';
 import { Component, Service } from '../models';
-import { ComponentIngredient } from '../models/component-ingredient.class';
-import { ModuleFactory } from './module-factory';
 import { ComponentParams } from '../models/component-params.class';
 
 export class ViviComponentFactory<T> {
     private components: Map<string, Component> = new Map<string, Component>();
-    private styleAppended: boolean;
-    private recipe: Array<ComponentIngredient> = new Array<ComponentIngredient>();
-    private recipeCreated: boolean;
 
     constructor(
         private constructor: new (...args) => Component,
         private services: Array<ViviServiceFactory<Service>> = new Array<ViviServiceFactory<Service>>()
     ) {
-        //
+        // Create an initial component to generate information from
+        const component = new this.constructor(...this.services.map(service => service.get()));
+
+        /*
+            @todo: Add dynamic styling
+            @body: Move this into the parse engine
+        */
+
+        // Create Style
+        if (component.style) {
+            const styleEl = document.createElement('style');
+            styleEl.id = `style-${this.constructor.name}`;
+            styleEl.innerHTML = component.style;
+            document.head.appendChild(styleEl);
+        }
+
+        // Cleanup fake data
+        component.destroy();
     }
 
     create(data?: ComponentParams): Component {
-        const component = new this.constructor(...this.services.map(service => service.get()));
-        component.data = data || {};
- 
-        // Edit node, markup
-        component.createNode();
-        this.createStyle(component.style);
-        this.createRecipe(<HTMLElement>component.parsedNode);
-        component.createRecipe(this.recipe);
+        const component = new this.constructor(data, ...this.services.map(service => service.get()));
 
         this.components.set(component.id, component);
         return component;
     }
 
-    private createStyle(style: string) {
-        if (style && !this.styleAppended) {
-            const styleEl = document.createElement('style');
-            styleEl.innerHTML = style;
-            document.head.appendChild(styleEl);
-            this.styleAppended = true;
-        }
-    }
-
-    private createRecipe(parentNode: HTMLElement) {
-        if (!this.recipeCreated) {
-            // Create recipe
-            // Get registry and parse for any elements with custom tags names
-            const moduleFactory: ModuleFactory = window.vivi;
-            moduleFactory.getComponentRegistry().forEach(reg => {
-                // Strip 'Component' off of name
-                const name = reg.slice(0, reg.lastIndexOf('Component'));
-                const els = parentNode.querySelectorAll(name.toLowerCase());
-                for (let i = 0; i < els.length; i++) {
-                    const el = els.item(i);
-                    const factory = moduleFactory.getFactoryByString(reg) as ViviComponentFactory<Component>;
-                    const ingredient = new ComponentIngredient(el as HTMLElement, factory);
-                    this.recipe.push(ingredient);
-                }
-            });
-
-            this.recipeCreated = true;
-        }
-
-    }
-
     destroy(id: string) {
         const component = this.get(id);
+
+        if (!component) {
+            console.error(`${this.constructor.name}: No component found with id: ${id}`);
+            return;
+        }
+
         // Run cleanup
         component.destroy();
 

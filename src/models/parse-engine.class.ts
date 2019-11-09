@@ -1,3 +1,7 @@
+import { ComponentIngredient } from './component-ingredient.class';
+import { ModuleFactory, ViviComponentFactory } from 'factory';
+import { Component } from './component.class';
+
 export class ParseEngine {
     private static attributeBlackList = [
         'v-class',
@@ -7,12 +11,14 @@ export class ParseEngine {
         'vif-class'
     ];
 
-    static parseNode(node: Node, data: Object): Node {
-        this.assignAttributes(node, data);
-        return node;
+    static parseNode(el: HTMLElement, data: Object): { el: HTMLElement, recipe: Array<ComponentIngredient> } {
+        const newNode = this.assignAttributes(el, data);
+        const recipe = this.createRecipe(newNode);
+        return { el: newNode, recipe };
     }
 
-    private static assignAttributes(node: Node, data: Object) {
+    private static assignAttributes(ogNode: HTMLElement, data: Object): HTMLElement {
+        const node = <HTMLElement>ogNode.cloneNode(true);
         // Get a list of all unique attributes
         const attributes = this.buildAttributeList(node);
         attributes.forEach(attr => {
@@ -59,10 +65,12 @@ export class ParseEngine {
         this.attributeParseVif(node, data, 'vif-innerHTML', (name, el, attr) => {
             el.innerHTML = ParseEngine.applyWithContext(attr, data);
         });
+
+        return node;
     }
 
-    private static buildAttributeList(node: Node, attributes: Set<string> = new Set<string>()): Set<string> {
-        const attr = (<HTMLElement>node).attributes;
+    private static buildAttributeList(node: HTMLElement, attributes: Set<string> = new Set<string>()): Set<string> {
+        const attr = node.attributes;
         if (attr){
             for (let i = 0; i < attr.length; i++) {
                 attributes.add(attr.item(i).name);
@@ -70,14 +78,14 @@ export class ParseEngine {
         }
 
         node.childNodes.forEach(child => {
-            this.buildAttributeList(child, attributes);
+            this.buildAttributeList(<HTMLElement>child, attributes);
         });
 
         return attributes;
     }
 
-    private static attributeParse(node: Node, data: Object, name: string, customParseFn?: (name: string, el: Element, attr: string) => void) {
-        (<HTMLElement>node).querySelectorAll('[' + name + ']').forEach(el => {
+    private static attributeParse(el: HTMLElement, data: Object, name: string, customParseFn?: (name: string, el: Element, attr: string) => void) {
+        el.querySelectorAll('[' + name + ']').forEach(el => {
             const attr = el.getAttribute(name);
 
             if (customParseFn) {
@@ -93,7 +101,7 @@ export class ParseEngine {
         });
     }
 
-    private static attributeParseVif(node: Node, data: Object, name: string, customParseFn?: (name: string, el: Element, attr: string) => void) {
+    private static attributeParseVif(node: HTMLElement, data: Object, name: string, customParseFn?: (name: string, el: Element, attr: string) => void) {
         this.attributeParse(node, data, name, (attrName, el, attr) => {
             // Match against (conditional) ? trueResult : falseResult
             const match = attr.match(/(?<=\()(.*?)(?=\)\s*\?).*?(?<=\?)\s?(.*)/);
@@ -117,6 +125,26 @@ export class ParseEngine {
         });
     }
 
+    private static createRecipe(node: HTMLElement) {
+        const recipe = new Array<ComponentIngredient>();
+        const moduleFactory: ModuleFactory = window.vivi;
+        moduleFactory.getComponentRegistry().forEach(reg => {
+            // Strip 'Component' off of name
+            const name = reg.slice(0, reg.lastIndexOf('Component'));
+            const els = node.querySelectorAll(name.toLowerCase());
+            for (let i = 0; i < els.length; i++) {
+                const el = els.item(i);
+                const factory = moduleFactory.getFactoryByString(reg) as ViviComponentFactory<Component>;
+                const ingredient = new ComponentIngredient(el.parentElement, factory, (<HTMLElement>el).dataset);
+                ingredient.create();
+                recipe.push(ingredient);
+            }
+        });
+
+        return recipe;
+    }
+
+    /* Generic fn */
     static conditional(condition: string, context: Object): boolean {
         return function (condition) {
             // Someone grab the holy water, we're going in
