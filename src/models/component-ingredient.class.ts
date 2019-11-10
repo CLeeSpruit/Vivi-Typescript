@@ -1,4 +1,3 @@
-import { ComponentParams } from './component-params.class';
 import { ViviComponentFactory } from 'factory';
 import { Component } from './component.class';
 
@@ -8,7 +7,7 @@ export class ComponentIngredient {
     constructor(
         private parentEl: HTMLElement,
         private factory: ViviComponentFactory<Component>,
-        private data?: ComponentParams
+        private data?: Object
     ) {
         this.component = this.factory.create(this.data);
         this.component.append(this.parentEl, true);

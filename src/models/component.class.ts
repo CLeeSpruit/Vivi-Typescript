@@ -5,7 +5,6 @@ import { ParseEngine } from './parse-engine.class';
 import { ApplicationEventService, ListenerOptions } from '../services/application-event.service';
 import { getElements } from '../decorators/element.decorator';
 import { ModuleFactory, ViviComponentFactory } from 'factory';
-import { ComponentParams } from './component-params.class';
 
 export abstract class Component {
     id: string;
@@ -20,7 +19,7 @@ export abstract class Component {
     appEvents: ApplicationEventService;
     children: Array<ComponentIngredient> = new Array<ComponentIngredient>();
 
-    constructor(public data: ComponentParams = {}) {
+    constructor(public data: Object = {}) {
         this.id = uuid();
 
         // Default Services
@@ -145,7 +144,7 @@ export abstract class Component {
         this.listeners.push(this.appEvents.createListener(eventName, cb.bind(this), options));
     }
 
-    createChild(parentEl: HTMLElement, component: new (...args) => Component, data?: ComponentParams) {
+    createChild(parentEl: HTMLElement, component: new (...args) => Component, data?: Object) {
         const factory = (<ModuleFactory>window.vivi).getFactory(component) as ViviComponentFactory<Component>;
         this.children.push(new ComponentIngredient(parentEl, factory, data));
     }

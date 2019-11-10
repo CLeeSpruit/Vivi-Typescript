@@ -1,6 +1,5 @@
 import { ComponentCreator } from './component-creator.class';
 import { MockComponent } from '../../models/__mocks__/component.class';
-import { ComponentParams } from '../../models/component-params.class';
 import { ComponentIngredient } from '../component-ingredient.class';
 
 describe('Component Creator', () => {
@@ -78,7 +77,7 @@ describe('Component Creator', () => {
         });
 
         it('data - should return component with provided data object', () => {
-            const data = <ComponentParams>{ name: 'cool test'};
+            const data = { name: 'cool test'};
             const mock = creator.createMock({ data });
 
             expect(mock).toBeTruthy();
@@ -89,7 +88,7 @@ describe('Component Creator', () => {
             const template = '<button>Test</button>';
             const style = '* { color: green }';
             const children = [ MockComponent ];
-            const data = <ComponentParams>{ name: 'cool test'};
+            const data = { name: 'cool test'};
 
             const mock = creator.createMock({ template, style, children, data });
 

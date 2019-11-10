@@ -1,6 +1,5 @@
 import { ViviServiceFactory } from './';
 import { Component, Service } from '../models';
-import { ComponentParams } from '../models/component-params.class';
 
 export class ViviComponentFactory<T> {
     private components: Map<string, Component> = new Map<string, Component>();
@@ -29,7 +28,7 @@ export class ViviComponentFactory<T> {
         component.destroy();
     }
 
-    create(data?: ComponentParams): Component {
+    create(data?: Object): Component {
         const component = new this.constructor(data, ...this.services.map(service => service.get()));
 
         this.components.set(component.id, component);

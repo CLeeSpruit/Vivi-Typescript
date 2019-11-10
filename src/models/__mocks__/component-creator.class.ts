@@ -1,6 +1,5 @@
 import { ModuleFactory, ViviComponentFactory } from '../../factory';
 import { Component } from '../../models';
-import { ComponentParams } from '../../models/component-params.class';
 import { MockComponent } from '../../models/__mocks__/component.class';
 import { ViviElementParams } from '../../decorators';
 import { EventTypes } from '../../events';
@@ -13,7 +12,7 @@ export interface ComponentMockOptions {
     hasChild?: boolean;
     children?: Array<new (...args) => Component>;
     hasData?: boolean;
-    data?: ComponentParams;
+    data?: Object;
     hasElements?: boolean;
     elements?: Array<ViviElementParams>;
 }
@@ -26,7 +25,7 @@ export class ComponentCreator {
 
     readonly defaultTemplate = '<span>Test</span>';
     readonly defaultStyle = '* { color: red }';
-    readonly defaultData = <ComponentParams>{ name: 'test' };
+    readonly defaultData = { name: 'test' };
     readonly defaultElement = <ViviElementParams>{
         selector: 'input.test',
         eventType: EventTypes.click,
