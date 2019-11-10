@@ -1,4 +1,3 @@
-import { ComponentIngredient } from './component-ingredient.class';
 import { ModuleFactory, ViviComponentFactory } from 'factory';
 import { Component } from './component.class';
 
@@ -11,7 +10,7 @@ export class ParseEngine {
         'vif-class'
     ];
 
-    static parseNode(el: HTMLElement, data: Object): { el: HTMLElement, recipe: Array<ComponentIngredient> } {
+    static parseNode(el: HTMLElement, data: Object): { el: HTMLElement, recipe: Array<Component> } {
         const newNode = this.assignAttributes(el, data);
         const recipe = this.createRecipe(newNode);
         return { el: newNode, recipe };
@@ -126,7 +125,7 @@ export class ParseEngine {
     }
 
     private static createRecipe(node: HTMLElement) {
-        const recipe = new Array<ComponentIngredient>();
+        const recipe = new Array<Component>();
         const moduleFactory: ModuleFactory = window.vivi;
         moduleFactory.getComponentRegistry().forEach(reg => {
             // Strip 'Component' off of name
@@ -135,8 +134,9 @@ export class ParseEngine {
             for (let i = 0; i < els.length; i++) {
                 const el = els.item(i);
                 const factory = moduleFactory.getFactoryByString(reg) as ViviComponentFactory<Component>;
-                const ingredient = new ComponentIngredient(el.parentElement, factory, (<HTMLElement>el).dataset);
-                recipe.push(ingredient);
+                const child = factory.create((<HTMLElement>el).dataset);
+                child.append(el.parentElement, true);
+                recipe.push(child);
             }
         });
 

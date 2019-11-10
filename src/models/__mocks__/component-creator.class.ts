@@ -22,7 +22,6 @@ export class ComponentCreator {
     readonly defaultComponents = [
         { constructor: MockComponent }
     ];
-
     readonly defaultTemplate = '<span>Test</span>';
     readonly defaultStyle = '* { color: red }';
     readonly defaultData = { name: 'test' };

@@ -1,6 +1,6 @@
 import { ComponentCreator } from './component-creator.class';
 import { MockComponent } from '../../models/__mocks__/component.class';
-import { ComponentIngredient } from '../component-ingredient.class';
+import { Component } from '../component.class';
 
 describe('Component Creator', () => {
     it('should init', () => {
@@ -66,7 +66,7 @@ describe('Component Creator', () => {
 
             expect(mock).toBeTruthy();
             expect(mock.children.length).toEqual(1);
-            expect(mock.children[0]).toBeInstanceOf(ComponentIngredient);
+            expect(mock.children[0]).toBeInstanceOf(Component);
         });
 
         it('hasData: true - should return component with default data object', () => {
@@ -96,7 +96,7 @@ describe('Component Creator', () => {
             expect(mock.template).toEqual(template);
             expect(mock.style).toEqual(style);
             expect(mock.children.length).toEqual(1);
-            expect(mock.children[0]).toBeInstanceOf(ComponentIngredient);
+            expect(mock.children[0]).toBeInstanceOf(Component);
             expect(mock.data).toEqual(data);
         });
     });

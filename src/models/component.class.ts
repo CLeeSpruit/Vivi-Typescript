@@ -1,6 +1,5 @@
 import * as uuid from 'uuid';
 import { ApplicationListener, Listener } from '../events';
-import { ComponentIngredient } from './component-ingredient.class';
 import { ParseEngine } from './parse-engine.class';
 import { ApplicationEventService, ListenerOptions } from '../services/application-event.service';
 import { getElements } from '../decorators/element.decorator';
@@ -17,7 +16,7 @@ export abstract class Component {
     parent: HTMLElement;
     listeners: Array<Listener | ApplicationListener> = new Array<Listener | ApplicationListener>();
     appEvents: ApplicationEventService;
-    children: Array<ComponentIngredient> = new Array<ComponentIngredient>();
+    children: Array<Component> = new Array<Component>();
 
     constructor(public data: Object = {}) {
         this.id = uuid();
@@ -129,9 +128,7 @@ export abstract class Component {
             listener.remove();
         });
         this.children.forEach(child => {
-            if (child.component) {
-                child.component.destroy();
-            }
+            child.destroy();
         });
     }
 
@@ -146,6 +143,8 @@ export abstract class Component {
 
     createChild(parentEl: HTMLElement, component: new (...args) => Component, data?: Object) {
         const factory = (<ModuleFactory>window.vivi).getFactory(component) as ViviComponentFactory<Component>;
-        this.children.push(new ComponentIngredient(parentEl, factory, data));
+        const comp = factory.create(data);
+        comp.append(parentEl);
+        this.children.push(comp);
     }
 }
