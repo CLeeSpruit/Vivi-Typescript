@@ -49,10 +49,16 @@ export class ViviComponentFactory<T> {
 
         // Remove from the DOM
         const node = document.getElementById(id);
-        node.remove();
+        if (node) {
+            node.remove();
+        }
 
         // Remove from the map
         this.components.delete(id);
+    }
+
+    destroyAll() {
+        this.components.forEach(comp => this.destroy(comp.id));
     }
 
     get(id?: string): Component {

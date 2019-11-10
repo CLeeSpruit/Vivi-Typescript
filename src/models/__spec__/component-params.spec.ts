@@ -1,35 +1,33 @@
-import { ModuleFactory } from '../../factory';
 import { MockComponentParams } from '../__mocks__/component-params.class';
-import { MockWithParamsComponent } from '../__mocks__/component.class';
+import { ComponentCreator } from '../__mocks__/component-creator.class';
 
 describe('Class: Component Params', () => {
-    beforeEach(() => {
-        const vivi = new ModuleFactory({
-            componentConstructors: [{ constructor: MockWithParamsComponent }]
-        });
+    const creator = new ComponentCreator();
+    afterEach(() => {
+        creator.clearMocks();
     });
     it('should init', () => {
         const params = new MockComponentParams(<MockComponentParams>{ name: 'test' });
-        const component = new MockWithParamsComponent(params);
+        const component = creator.createMock({ data: params });
 
         expect(component).toBeTruthy();
-        expect(component.params).toBeTruthy();
-        expect(component.params.name).toEqual(params.name);
+        expect(component.data).toBeTruthy();
+        expect(component.data['name']).toEqual(params.name);
     });
 
     it('component should still init without params', () => {
-        const component = new MockWithParamsComponent();
+        const component = creator.createMock();
 
         expect(component).toBeTruthy();
-        expect(component.params).toEqual({});
+        expect(component.data).toEqual({});
     });
 
     it('params should still init without params', () => {
         const params = new MockComponentParams(null);
-        const component = new MockWithParamsComponent(params);
+        const component = creator.createMock({ data: null });
 
         expect(component).toBeTruthy();
-        expect(component.params).toBeTruthy();
-        expect(component.params).toEqual({});
+        expect(component.data).toBeTruthy();
+        expect(component.data).toEqual({});
     });
 });

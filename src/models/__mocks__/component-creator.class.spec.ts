@@ -68,7 +68,6 @@ describe('Component Creator', () => {
             expect(mock).toBeTruthy();
             expect(mock.children.length).toEqual(1);
             expect(mock.children[0]).toBeInstanceOf(ComponentIngredient);
-            expect(mock.children[0].component).toBeInstanceOf(MockComponent);
         });
 
         it('hasData: true - should return component with default data object', () => {
@@ -99,8 +98,23 @@ describe('Component Creator', () => {
             expect(mock.style).toEqual(style);
             expect(mock.children.length).toEqual(1);
             expect(mock.children[0]).toBeInstanceOf(ComponentIngredient);
-            expect(mock.children[0].component).toBeInstanceOf(MockComponent);
             expect(mock.data).toEqual(data);
+        });
+    });
+
+    describe('clearMocks', () => {
+        it('should not throw errors if there are no components', () => {
+            const creator = new ComponentCreator();
+            creator.clearMocks();
+        });
+
+        it('should clear all existsing mocks', () => {
+            const creator = new ComponentCreator();
+            creator.createMock();
+            creator.createMock();
+            creator.clearMocks();
+
+            expect(creator.getFactory().get()).toBeFalsy();
         });
     });
 });

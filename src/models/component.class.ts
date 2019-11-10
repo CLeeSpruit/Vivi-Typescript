@@ -20,11 +20,14 @@ export abstract class Component {
     appEvents: ApplicationEventService;
     children: Array<ComponentIngredient> = new Array<ComponentIngredient>();
 
-    constructor(public data: ComponentParams = {}, overwriteTemplate?: string, overwriteStyle?: string) {
+    constructor(public data: ComponentParams = {}) {
         this.id = uuid();
 
         // Default Services
         this.appEvents = (<any>window).vivi.get(ApplicationEventService);
+
+        // Set default parent
+        this.parent = document.body;
 
         // Get template and style file
 
@@ -37,23 +40,16 @@ export abstract class Component {
         const directory = this.componentName + '/' + this.componentName;
 
         // Sadly because of how context replacement plugin works for webpack, this can't really be functionalized
-        if (overwriteTemplate) {
-            this.template = overwriteTemplate;
-        } else {
-            try {
-                this.template = require('vivi_application/' + directory + '.component.html');
-            } catch (e) {
-                 this.template = '';
-            }
-    
+        try {
+            this.template = require('vivi_application/' + directory + '.component.html');
+        } catch (e) {
+            this.template = '';
         }
 
-        if (overwriteStyle) {
-            try {
-                this.style = require('vivi_application/' + directory + '.component.scss');
-            } catch (e) {
-                this.style = '';
-            }
+        try {
+            this.style = require('vivi_application/' + directory + '.component.scss');
+        } catch (e) {
+            this.style = '';
         }
 
         // Create Node that is named after the component class
@@ -68,7 +64,8 @@ export abstract class Component {
         this.children.push(...parsed.recipe);
     }
 
-    append(parent: HTMLElement = document.body, doNotLoad?: boolean) {
+    append(parent?: HTMLElement, doNotLoad?: boolean) {
+        if (!parent) parent = document.body;
         parent.appendChild(this.parsedNode);
 
         // Run load all, which loads children, then the load hook
@@ -84,7 +81,7 @@ export abstract class Component {
 
     loadAll() {
         if (!this.element) {
-            console.error(`${this.componentName} needs to be appended before loading.`);
+            console.warn(`${this.componentName} needs to be appended before loading.`);
             return;
         }
 
@@ -104,16 +101,18 @@ export abstract class Component {
     }
 
     redraw() {
-        if (this.element) {
-            // Remove 
-            const newParse = ParseEngine.parseNode(this.ogNode, this.data);
-            const newEl = newParse.el;
-            const recipe = newParse.recipe;
-            const oldNode = document.getElementById(this.id);
+        // Remove 
+        const newParse = ParseEngine.parseNode(this.ogNode, this.data);
+        const newEl = newParse.el;
+        const recipe = newParse.recipe;
+        const oldNode = document.getElementById(this.id);
+        if (oldNode) {
             this.parent.replaceChild(newEl, oldNode);
-            this.parsedNode = newEl;
-            this.element = document.getElementById(this.id);
+        } else {
+            this.parent.appendChild(newEl);
         }
+        this.parsedNode = newEl;
+        this.element = document.getElementById(this.id);
     }
 
     detach() {
@@ -131,7 +130,9 @@ export abstract class Component {
             listener.remove();
         });
         this.children.forEach(child => {
-            child.component.destroy();
+            if (child.component) {
+                child.component.destroy();
+            }
         });
     }
 

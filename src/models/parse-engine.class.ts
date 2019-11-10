@@ -136,7 +136,6 @@ export class ParseEngine {
                 const el = els.item(i);
                 const factory = moduleFactory.getFactoryByString(reg) as ViviComponentFactory<Component>;
                 const ingredient = new ComponentIngredient(el.parentElement, factory, (<HTMLElement>el).dataset);
-                ingredient.create();
                 recipe.push(ingredient);
             }
         });

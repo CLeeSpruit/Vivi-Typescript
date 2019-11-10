@@ -1,12 +1,12 @@
 import { ParseEngine } from '../parse-engine.class';
 import { attributeList } from './attribute-list';
+import { ComponentCreator } from '../__mocks__/component-creator.class';
 
 describe('Parse Engine', () => {
+    const creator = new ComponentCreator();
+
     afterEach(() => {
-        // Clear the document
-        for (let i = 0; i < document.body.children.length; i++) {
-            document.body.children.item(i).remove();
-        }
+        creator.clearMocks();
     });
 
     it('should work', () => {
@@ -66,8 +66,8 @@ describe('Parse Engine', () => {
                 const value = 'this.fluffy';
                 child.setAttribute(attr, 'this.fluffy');
                 node.append(child);
-                const result = ParseEngine.parseNode(node, data) as HTMLDivElement;
-                const actual = result.querySelector('div');
+                const result = ParseEngine.parseNode(node, data);
+                const actual = result.el.querySelector('div');
                 expect(actual).toBeTruthy();
                 expect(actual.getAttribute(normalAttrName)).toEqual(data.fluffy);
                 expect(actual.getAttribute('data-' + attr)).toEqual(value);
@@ -86,8 +86,8 @@ describe('Parse Engine', () => {
                 const value = `(this.fluffy === 'bunny') ? this.fluffy`;
                 child.setAttribute(attr, value);
                 node.append(child);
-                const result = ParseEngine.parseNode(node, data) as HTMLDivElement;
-                const actual = result.querySelector('div');
+                const result = ParseEngine.parseNode(node, data);
+                const actual = result.el.querySelector('div');
 
                 expect(actual).toBeTruthy();
                 expect(actual.getAttribute(normalAttrName)).toEqual(data.fluffy);
@@ -103,8 +103,8 @@ describe('Parse Engine', () => {
                 const value = `(this.fluffy === 'bunny') ? this.fluffy`;
                 child.setAttribute(attr, value);
                 node.append(child);
-                const result = ParseEngine.parseNode(node, data) as HTMLDivElement;
-                const actual = result.querySelector('div');
+                const result = ParseEngine.parseNode(node, data);
+                const actual = result.el.querySelector('div');
 
                 expect(actual).toBeTruthy();
                 expect(actual.getAttribute(normalAttrName)).toBeFalsy();
@@ -119,8 +119,8 @@ describe('Parse Engine', () => {
                 const value = `(this.fluffy === 'bunny') ? this.fluffy : this.puppy`;
                 child.setAttribute(attr, value);
                 node.append(child);
-                const result = ParseEngine.parseNode(node, data) as HTMLDivElement;
-                const actual = result.querySelector('div');
+                const result = ParseEngine.parseNode(node, data);
+                const actual = result.el.querySelector('div');
 
                 expect(actual).toBeTruthy();
                 expect(actual.getAttribute(normalAttrName)).toEqual(data.fluffy);
@@ -135,8 +135,8 @@ describe('Parse Engine', () => {
                 const value = `(this.fluffy === 'bunny') ? this.fluffy : this.puppy`;
                 child.setAttribute(attr, value);
                 node.append(child);
-                const result = ParseEngine.parseNode(node, data) as HTMLDivElement;
-                const actual = result.querySelector('div');
+                const result = ParseEngine.parseNode(node, data);
+                const actual = result.el.querySelector('div');
 
                 expect(actual).toBeTruthy();
                 expect(actual.getAttribute(normalAttrName)).toEqual(data.puppy);
@@ -151,8 +151,8 @@ describe('Parse Engine', () => {
                 const value = `(whatever) ? this.fluffly`;
                 child.setAttribute(attr, value);
                 node.append(child);
-                const result = ParseEngine.parseNode(node, data) as HTMLDivElement;
-                const actual = result.querySelector('div');
+                const result = ParseEngine.parseNode(node, data);
+                const actual = result.el.querySelector('div');
 
                 expect(actual).toBeTruthy();
                 expect(actual.getAttribute(normalAttrName)).toBeFalsy();
@@ -167,8 +167,8 @@ describe('Parse Engine', () => {
                 const value = `whatever ? this.fluffy`;
                 child.setAttribute(attr, value);
                 node.append(child);
-                const result = ParseEngine.parseNode(node, data) as HTMLDivElement;
-                const actual = result.querySelector('div');
+                const result = ParseEngine.parseNode(node, data);
+                const actual = result.el.querySelector('div');
 
                 expect(actual).toBeTruthy();
                 expect(actual.getAttribute(normalAttrName)).toBeFalsy();
@@ -183,8 +183,8 @@ describe('Parse Engine', () => {
                 const value = `(this.fluffy) ?`;
                 child.setAttribute(attr, value);
                 node.append(child);
-                const result = ParseEngine.parseNode(node, data) as HTMLDivElement;
-                const actual = result.querySelector('div');
+                const result = ParseEngine.parseNode(node, data);
+                const actual = result.el.querySelector('div');
 
                 expect(actual).toBeTruthy();
                 expect(actual.getAttribute(normalAttrName)).toBeFalsy();
@@ -208,8 +208,8 @@ describe('Parse Engine', () => {
                 const value = 'this.fluffy this.puppy';
                 child.setAttribute('v-class', value);
                 node.append(child);
-                const result = ParseEngine.parseNode(node, data) as HTMLDivElement;
-                const actual = result.querySelector('span');
+                const result = ParseEngine.parseNode(node, data);
+                const actual = result.el.querySelector('span');
 
                 expect(actual.classList.value).toEqual('bunny bow-wow');
             });
@@ -223,8 +223,8 @@ describe('Parse Engine', () => {
                 const value = 'this.fluffy';
                 child.setAttribute('v-innerHTML', value);
                 node.append(child);
-                const result = ParseEngine.parseNode(node, data) as HTMLDivElement;
-                const actual = result.querySelector('span');
+                const result = ParseEngine.parseNode(node, data);
+                const actual = result.el.querySelector('span');
 
                 expect(actual.innerHTML).toEqual(data.fluffy);
             });
@@ -246,8 +246,8 @@ describe('Parse Engine', () => {
                 const value = `(this.fluffy === 'bunny') ? this.fluffy this.puppy : this.puppy`;
                 child.setAttribute('vif-class', value);
                 node.append(child);
-                const result = ParseEngine.parseNode(node, data) as HTMLDivElement;
-                const actual = result.querySelector('div');
+                const result = ParseEngine.parseNode(node, data);
+                const actual = result.el.querySelector('div');
 
                 expect(actual).toBeTruthy();
                 expect(actual.classList.value).toEqual('bunny bow');
@@ -262,8 +262,8 @@ describe('Parse Engine', () => {
                 const value = `(this.fluffy === 'bunny') ? this.fluffy pupper : this.puppy`;
                 child.setAttribute('vif-class', value);
                 node.append(child);
-                const result = ParseEngine.parseNode(node, data) as HTMLDivElement;
-                const actual = result.querySelector('div');
+                const result = ParseEngine.parseNode(node, data);
+                const actual = result.el.querySelector('div');
 
                 expect(actual).toBeTruthy();
                 expect(actual.classList.value).toEqual('bunny pupper');
@@ -280,8 +280,8 @@ describe('Parse Engine', () => {
                 const value = `(this.fluffy === 'bunny') ? this.fluffy : bow`;
                 child.setAttribute('vif-innerHTML', value);
                 node.append(child);
-                const result = ParseEngine.parseNode(node, data) as HTMLDivElement;
-                const actual = result.querySelector('div');
+                const result = ParseEngine.parseNode(node, data);
+                const actual = result.el.querySelector('div');
 
                 expect(actual).toBeTruthy();
                 expect(actual.innerHTML).toEqual('bunny');
@@ -299,8 +299,8 @@ describe('Parse Engine', () => {
             const value = `this.fluffy === 'bunny'`;
             node.setAttribute('v-if', value);
             parent.append(node);
-            const result = ParseEngine.parseNode(parent, data) as HTMLDivElement;
-            const actual = result.querySelector('span');
+            const result = ParseEngine.parseNode(parent, data);
+            const actual = result.el.querySelector('span');
 
             expect(actual).toBeTruthy();
         });
@@ -312,8 +312,8 @@ describe('Parse Engine', () => {
             const value = `this.fluffy === 'bunny'`;
             node.setAttribute('v-if', value);
             parent.append(node);
-            const result = ParseEngine.parseNode(parent, data) as HTMLDivElement;
-            const actual = result.querySelector('span');
+            const result = ParseEngine.parseNode(parent, data);
+            const actual = result.el.querySelector('span');
 
             expect(actual).toBeFalsy();
         });

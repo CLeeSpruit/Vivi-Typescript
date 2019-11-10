@@ -1,7 +1,9 @@
 import { ModuleFactory, ViviComponentFactory } from '../../factory';
 import { Component } from '../../models';
 import { ComponentParams } from '../../models/component-params.class';
-import { MockComponent, MockWithChildrenComponent } from '../../models/__mocks__/component.class';
+import { MockComponent } from '../../models/__mocks__/component.class';
+import { ViviElementParams } from '../../decorators';
+import { EventTypes } from '../../events';
 
 export interface ComponentMockOptions {
     hasTemplate?: boolean;
@@ -9,21 +11,28 @@ export interface ComponentMockOptions {
     hasStyle?: boolean;
     style?: string;
     hasChild?: boolean;
-    children?: Array<new (...args) => Component>
+    children?: Array<new (...args) => Component>;
     hasData?: boolean;
-    data?: ComponentParams
+    data?: ComponentParams;
+    hasElements?: boolean;
+    elements?: Array<ViviElementParams>;
 }
 
 export class ComponentCreator {
     module: ModuleFactory;
     readonly defaultComponents = [
-        { constructor: MockComponent },
-        { constructor: MockWithChildrenComponent }
+        { constructor: MockComponent }
     ];
 
     readonly defaultTemplate = '<span>Test</span>';
     readonly defaultStyle = '* { color: red }';
     readonly defaultData = <ComponentParams>{ name: 'test' };
+    readonly defaultElement = <ViviElementParams>{
+        selector: 'input.test',
+        eventType: EventTypes.click,
+        handlerFnName: 'handleClick',
+        propertyKey: 'button'
+    };
 
     constructor() {
         this.module = new ModuleFactory({
@@ -31,7 +40,7 @@ export class ComponentCreator {
         });
     }
 
-    private getFactory(): ViviComponentFactory<MockComponent> {
+    getFactory(): ViviComponentFactory<MockComponent> {
         return <ViviComponentFactory<MockComponent>>this.module.getFactory(MockComponent);
     }
 
@@ -69,6 +78,16 @@ export class ComponentCreator {
             comp.data = options.data ? options.data : this.defaultData;
         }
 
+        if (options.hasElements || options.elements) {
+            if (options.elements) {
+                Reflect.defineMetadata('ViviElement', options.elements, comp);
+                options.elements.forEach(element => comp[element.handlerFnName] = () => {});
+            } else {
+                Reflect.defineMetadata('ViviElement', [this.defaultElement], comp);
+                comp[this.defaultElement.handlerFnName] = () => {};
+            }
+        }
+        comp.append();
         comp.redraw();
 
         return comp;
@@ -76,9 +95,6 @@ export class ComponentCreator {
 
     clearMocks() {
         const factory = this.getFactory();
-        let component: Component;
-        while (component = factory.get()) {
-            factory.destroy(component.id);
-        }
+        factory.destroyAll();
     }
 }

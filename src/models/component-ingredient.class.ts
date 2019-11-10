@@ -8,12 +8,8 @@ export class ComponentIngredient {
     constructor(
         private parentEl: HTMLElement,
         private factory: ViviComponentFactory<Component>,
-        private data: ComponentParams
+        private data?: ComponentParams
     ) {
-        //
-    }
-
-    create() {
         this.component = this.factory.create(this.data);
         this.component.append(this.parentEl, true);
     }
