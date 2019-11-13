@@ -1,6 +1,8 @@
 import { Component } from '../../models';
 import { MockComponent } from '../../models/__mocks__/component.class';
 import { Mocker } from '../mocker';
+import { ViviElementParams } from '../../decorators';
+import { EventTypes } from '../../events';
 
 describe('Mocker', () => {
     it('should init', () => {
@@ -83,6 +85,35 @@ describe('Mocker', () => {
             expect(comp).toBeTruthy();
             expect(comp.data).toEqual(data);
         });
+
+        it('hasElements: true - should return component with default element', () => {
+            const comp = mock.createMock({ hasElements: true });
+
+            expect(comp).toBeTruthy();
+            expect(comp[mock.defaultElement.propertyKey]).toBeTruthy();
+        });
+
+        it('elements - should return component with provided element objects', () => {
+            const elements = [
+                <ViviElementParams>{
+                    propertyKey: 'testA',
+                    selector: 'button.test',
+                    handlerFnName: 'handleTestClick',
+                    eventType: EventTypes.click
+                },
+                <ViviElementParams>{
+                    propertyKey: 'testB',
+                    selector: 'span.test'
+                },
+            ];
+            const template = `<button class="test"></button><span class="test"></span>`;
+            const comp = mock.createMock({ elements, template });
+
+            expect(comp).toBeTruthy();
+            expect(comp[elements[0].propertyKey]).toBeTruthy();
+            expect(comp[elements[1].propertyKey]).toBeTruthy();
+        });
+
 
         it('all - should return component with provided options', () => {
             const template = '<button>Test</button>';

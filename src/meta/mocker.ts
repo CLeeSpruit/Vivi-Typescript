@@ -23,14 +23,12 @@ export class Mocker {
     readonly defaultComponents = [
         { constructor: MockComponent, services: [ MockService] }
     ];
-    readonly defaultTemplate = '<span>Test</span>';
+    readonly defaultTemplate = '<span class="test">Test</span>';
     readonly defaultStyle = '* { color: red }';
     readonly defaultData = { name: 'test' };
     readonly defaultElement = <ViviElementParams>{
-        selector: 'input.test',
-        eventType: EventTypes.click,
-        handlerFnName: 'handleClick',
-        propertyKey: 'button'
+        selector: 'span.test',
+        propertyKey: 'test'
     };
 
     constructor() {
@@ -84,7 +82,7 @@ export class Mocker {
                 options.elements.forEach(element => comp[element.handlerFnName] = () => { });
             } else {
                 Reflect.defineMetadata('ViviElement', [this.defaultElement], comp);
-                comp[this.defaultElement.handlerFnName] = () => { };
+                comp.template = this.defaultTemplate;
             }
         }
         comp.append();
