@@ -1,13 +1,13 @@
 import { Listener } from '../../events';
 import { MockComponent } from '../__mocks__/component.class';
 import { ParseEngine } from '../parse-engine.class';
-import { ComponentCreator } from '../__mocks__/component-creator.class';
+import { Mocker } from '../../meta/mocker';
 
 describe('Class: Component', () => {
-    const creator = new ComponentCreator();
+    const mock = new Mocker();
 
     afterEach(() => {
-        creator.clearMocks();
+        mock.clearMocks();
     });
 
     describe('Constructor', () => {
@@ -18,26 +18,26 @@ describe('Class: Component', () => {
         });
 
         it('should init via creator', () => {
-            const component = creator.createMock();
+            const component = mock.createMock();
 
             expect(component).toBeTruthy();
         });
 
         it('should grab the application event service', () => {
-            const component = creator.createMock();
+            const component = mock.createMock();
 
             expect(component.appEvents).toBeTruthy();
         });
 
         it('should assign template and style', () => {
-            const component = creator.createMock();
+            const component = mock.createMock();
 
             expect(component.template).toEqual('');
             expect(component.style).toEqual('');
         });
 
         it('should create a copy of the original node', () => {
-            const component = creator.createMock();
+            const component = mock.createMock();
 
             expect(component.ogNode).toBeTruthy();
             expect(component.ogNode.id).toEqual(component.id);
@@ -45,7 +45,7 @@ describe('Class: Component', () => {
 
         it('should parse node', () => {
             const data = { name: 'test ' };
-            const component = creator.getFactory().create(data);
+            const component = mock.getFactory().create(data);
 
             expect(component.parsedNode).toBeTruthy();
         });
@@ -53,7 +53,7 @@ describe('Class: Component', () => {
 
     describe('Append', () => {
         it('should append to document body if parent is not provided', () => {
-            const component = creator.createMock();
+            const component = mock.createMock();
 
             component.append();
 
@@ -62,7 +62,7 @@ describe('Class: Component', () => {
         });
 
         it('should append to parent', () => {
-            const component = creator.createMock();
+            const component = mock.createMock();
             const mockParent = document.createElement('parent');
             document.body.appendChild(mockParent);
 
@@ -77,36 +77,36 @@ describe('Class: Component', () => {
 
     describe.skip('append', () => {
         it('should automatically add elements and bind them', () => {
-            const component = creator.createMock({
+            const component = mock.createMock({
                 hasElements: true,
                 template: `<button class="test"></button>`
             });
 
             const mockClick = jest.fn();
-            component[creator.defaultElement.handlerFnName] = mockClick;
+            component[mock.defaultElement.handlerFnName] = mockClick;
             component.append();
-            component[creator.defaultElement.propertyKey].click();
+            component[mock.defaultElement.propertyKey].click();
 
             expect(mockClick.mock.calls.length).toBe(1);
         });
 
         it('should accept element selectors without events', () => {
             const testEl = { selector: 'span.test', propertyKey: 'testSpan' };
-            const component = creator.createMock({
+            const component = mock.createMock({
                 elements: [ testEl ],
                 template: `<span class="test"></span>`
             });
 
             component.append();
-            component[creator.defaultElement.propertyKey].click();
+            component[mock.defaultElement.propertyKey].click();
 
-            expect(component[creator.defaultElement.propertyKey]).toBeTruthy();
+            expect(component[mock.defaultElement.propertyKey]).toBeTruthy();
         });
     });
 
     describe('detach', () => {
         it('should remove element from DOM', () => {
-            const component = creator.createMock();
+            const component = mock.createMock();
             const mockParent = document.createElement('parent');
             document.body.appendChild(mockParent);
 
@@ -121,7 +121,7 @@ describe('Class: Component', () => {
 
     describe('destroy', () => {
         it('should remove any listeners', () => {
-            const component = creator.createMock();
+            const component = mock.createMock();
             const listen = new Listener('test', null, null);
             component.listeners.push(listen);
             const removeSpy = spyOn(listen, 'remove');
@@ -134,7 +134,7 @@ describe('Class: Component', () => {
 
     describe('listen', () => {
         it('creates a listener for an element', (done) => {
-            const component = creator.createMock();
+            const component = mock.createMock();
 
             const el = document.createElement('button');
 
@@ -149,7 +149,7 @@ describe('Class: Component', () => {
 
     describe('appListen', () => {
         it('creates an appListener for an event', (done) => {
-            const component = creator.createMock();
+            const component = mock.createMock();
 
             component.appListen('test', () => {
                 expect(true).toBeTruthy();
@@ -162,7 +162,7 @@ describe('Class: Component', () => {
 
     describe.skip('redraw', () => {
         it('should not blow up if there is no template', () => {
-            const component = creator.createMock();
+            const component = mock.createMock();
             const mockParent = document.createElement('parent');
             document.body.appendChild(mockParent);
 
@@ -173,7 +173,7 @@ describe('Class: Component', () => {
         });
 
         it('should not blow up if there is no element', () => {
-            const component = creator.createMock();
+            const component = mock.createMock();
 
             component.redraw();
 
@@ -181,7 +181,7 @@ describe('Class: Component', () => {
         });
 
         it('should redraw on the same component does not do anything', () => {
-            const component = creator.createMock({
+            const component = mock.createMock({
                 data: { name: 'test' },
                 template: `<span v-innerHTML="this.name"></span>`
             });
@@ -199,7 +199,7 @@ describe('Class: Component', () => {
         });
 
         it('should redraw with new params', () => {
-            const component = creator.createMock({
+            const component = mock.createMock({
                 data: { name: 'fluffy' },
                 template: `<span v-innerHTML="this.name"></span>`
             });

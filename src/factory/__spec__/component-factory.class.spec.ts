@@ -1,12 +1,12 @@
 import { ViviComponentFactory } from '../';
 import { MockComponent } from '../../models/__mocks__/component.class';
-import { ComponentCreator } from '../../models/__mocks__/component-creator.class';
+import { Mocker } from '../../meta/mocker';
 
 describe('Component Factory', () => {
-    const creator = new ComponentCreator();
+    const mock = new Mocker();
 
     afterEach(() => {
-        creator.clearMocks();
+        mock.clearMocks();
     });
 
     it('should init', () => {
@@ -17,18 +17,17 @@ describe('Component Factory', () => {
 
     it('should append style to head if style is provided', () => {
         const style = 'a { color: blue }'
-        const stylishMock = creator.createMock({ style });
+        const stylishMock = mock.createMock({ style });
         const actual = document.getElementsByTagName('style');
         expect(actual.length).toEqual(1);
         expect(actual.item(0).innerHTML).toEqual(style);
     });
 
     describe('create', () => {
-
         it('should create a new component and return that component', () => {
             const mock = new ViviComponentFactory<MockComponent>(MockComponent);
 
-            const component = <MockComponent>mock.create();
+            const component = mock.create();
 
             expect(component).toBeTruthy();
             expect(component instanceof MockComponent).toBeTruthy();
@@ -37,53 +36,53 @@ describe('Component Factory', () => {
 
     describe('get', () => {
         it('get should return specific component', () => {
-            const componentA = creator.createMock();
-            const componentB = creator.createMock();
+            const componentA = mock.createMock();
+            const componentB = mock.createMock();
 
-            expect(creator.getFactory().get(componentA.id)).toEqual(componentA);
-            expect(creator.getFactory().get(componentB.id)).toEqual(componentB);
+            expect(mock.getFactory().get(componentA.id)).toEqual(componentA);
+            expect(mock.getFactory().get(componentB.id)).toEqual(componentB);
         });
 
         it('get should return first component created if no id is provided', () => {
-            const componentA = creator.createMock();
-            const componentB = creator.createMock();
+            const componentA = mock.createMock();
+            const componentB = mock.createMock();
 
-            expect(creator.getFactory().get()).toEqual(componentA);
+            expect(mock.getFactory().get()).toEqual(componentA);
         });
 
         it('get should return null if no id is provided and no components have been created', () => {
-            expect(creator.getFactory().get()).toEqual(null);
+            expect(mock.getFactory().get()).toEqual(null);
         });
     });
 
     describe('destroy', () => {
         it('should trigger component.destroy', () => {
-            const comp = creator.createMock();
+            const comp = mock.createMock();
             const destroySpy = spyOn(comp, 'destroy');
             comp.append();
 
-            creator.getFactory().destroy(comp.id);
+            mock.getFactory().destroy(comp.id);
 
             expect(destroySpy).toHaveBeenCalledTimes(1);
         });
 
         it('should remove from the DOM', () => {
-            const comp = creator.createMock();
+            const comp = mock.createMock();
             comp.append();
 
-            creator.getFactory().destroy(comp.id);
+            mock.getFactory().destroy(comp.id);
 
             const actual = document.getElementById(comp.id);
             expect(actual).toBeFalsy();
         });
 
         it('should remove from the factory map', () => {
-            const comp = creator.createMock();
+            const comp = mock.createMock();
             comp.append();
 
-            creator.getFactory().destroy(comp.id);
+            mock.getFactory().destroy(comp.id);
 
-            const actual = creator.getFactory().get(comp.id);
+            const actual = mock.getFactory().get(comp.id);
             expect(actual).toBeFalsy();
         });
     });

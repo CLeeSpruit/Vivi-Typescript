@@ -1,8 +1,8 @@
-import { ModuleFactory, ViviComponentFactory } from '../../factory';
-import { Component } from '../../models';
-import { MockComponent } from '../../models/__mocks__/component.class';
-import { ViviElementParams } from '../../decorators';
-import { EventTypes } from '../../events';
+import { Component } from '../models';
+import { ViviElementParams } from '../decorators';
+import { ModuleFactory, ViviComponentFactory } from '../factory';
+import { MockComponent } from '../models/__mocks__/component.class';
+import { EventTypes } from '../events';
 
 export interface ComponentMockOptions {
     hasTemplate?: boolean;
@@ -17,7 +17,7 @@ export interface ComponentMockOptions {
     elements?: Array<ViviElementParams>;
 }
 
-export class ComponentCreator {
+export class Mocker {
     module: ModuleFactory;
     readonly defaultComponents = [
         { constructor: MockComponent }
@@ -86,7 +86,6 @@ export class ComponentCreator {
             }
         }
         comp.append();
-        comp.redraw();
 
         return comp;
     }
