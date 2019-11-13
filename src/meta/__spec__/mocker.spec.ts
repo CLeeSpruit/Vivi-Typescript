@@ -134,6 +134,19 @@ describe('Mocker', () => {
             expect(comp.children[0]).toBeInstanceOf(Component);
             expect(comp.data).toEqual(data);
         });
+
+        it('doNotLoad - should not automatically load component if true', () => {
+            const loadSpy = spyOn(MockComponent.prototype, 'loadAll');
+            mock.createMock({ doNotLoad: true });
+
+            expect(loadSpy).not.toHaveBeenCalled();
+        });
+
+        it('doNotAppend - should not automatically append the component if true', () => {
+            const comp = mock.createMock({ doNotAppend: true });
+
+            expect(comp.element).toBeFalsy();
+        });
     });
 
     describe('clearMocks', () => {

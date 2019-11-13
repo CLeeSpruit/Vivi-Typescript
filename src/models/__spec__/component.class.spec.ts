@@ -1,4 +1,4 @@
-import { Listener } from '../../events';
+import { Listener, EventTypes } from '../../events';
 import { Mocker } from '../../meta/mocker';
 
 describe('Class: Component', () => {
@@ -27,7 +27,9 @@ describe('Class: Component', () => {
             expect(component.template).toEqual('');
             expect(component.style).toEqual('');
         });
+    });
 
+    describe('append', () => {
         it('should create a copy of the original node', () => {
             const component = mock.createMock();
 
@@ -37,13 +39,28 @@ describe('Class: Component', () => {
 
         it('should parse node', () => {
             const data = { name: 'test ' };
-            const component = mock.getFactory().create(data);
+            const comp = mock.createMock({ data });
 
-            expect(component.parsedNode).toBeTruthy();
+            expect(comp.parsedNode).toBeTruthy();
         });
-    });
 
-    describe('Append', () => {
+        it('should append style to head', () => {
+            const component = mock.createMock({ hasStyle: true });
+
+            const styleTag = document.head.querySelector('style#style-mock');
+            expect(component.style).toBeTruthy();
+            expect(styleTag).toBeTruthy();
+        });
+
+        it('should not append style if it already exists', () => {
+            const component = mock.createMock({ hasStyle: true });
+            const componentB = mock.createMock({ hasStyle: true });
+
+            const styleTags = document.head.querySelectorAll('style#style-mock');
+
+            expect(styleTags.length).toEqual(1);
+        });
+
         it('should append to document body if parent is not provided', () => {
             const component = mock.createMock();
 
@@ -64,20 +81,18 @@ describe('Class: Component', () => {
             const template = document.getElementById(component.id);
             expect(template.innerHTML).toEqual(component.template);
         });
-    });
 
-
-    describe.skip('append', () => {
         it('should automatically add elements and bind them', () => {
+            const el = { propertyKey: 'test', selector: 'button.test', handlerFnName: 'testClick', eventType: EventTypes.click };
             const component = mock.createMock({
-                hasElements: true,
+                elements: [el],
                 template: `<button class="test"></button>`
             });
 
             const mockClick = jest.fn();
-            component[mock.defaultElement.handlerFnName] = mockClick;
+            component[el.handlerFnName] = mockClick;
             component.append();
-            component[mock.defaultElement.propertyKey].click();
+            component[el.propertyKey].click();
 
             expect(mockClick.mock.calls.length).toBe(1);
         });
@@ -85,14 +100,31 @@ describe('Class: Component', () => {
         it('should accept element selectors without events', () => {
             const testEl = { selector: 'span.test', propertyKey: 'testSpan' };
             const component = mock.createMock({
-                elements: [ testEl ],
+                elements: [testEl],
                 template: `<span class="test"></span>`
             });
 
             component.append();
-            component[mock.defaultElement.propertyKey].click();
 
-            expect(component[mock.defaultElement.propertyKey]).toBeTruthy();
+            expect(component[testEl.propertyKey]).toBeTruthy();
+        });
+    });
+
+    describe('loadall', () => {
+        it('should throw an error if component is not appended', () => {
+            const comp = mock.createMock({ doNotAppend: true });
+            const errorSpy = spyOn(console, 'error');
+            comp.loadAll();
+
+            expect(errorSpy).toHaveBeenCalled();
+        });
+
+        it('children should be called', () => {
+            const comp = mock.createMock({ hasChild: true, doNotLoad: true });
+            const loadSpy = spyOn(comp.children[0], 'loadAll');
+            comp.append(); // Append calls loadAll
+
+            expect(loadSpy).toHaveBeenCalled();
         });
     });
 
@@ -152,7 +184,7 @@ describe('Class: Component', () => {
         });
     });
 
-    describe.skip('redraw', () => {
+    describe('redraw', () => {
         it('should not blow up if there is no template', () => {
             const component = mock.createMock();
             const mockParent = document.createElement('parent');

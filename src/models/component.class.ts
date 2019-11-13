@@ -65,21 +65,19 @@ export abstract class Component {
         el.id = this.id;
         el.innerHTML = this.template;
         this.ogNode = <HTMLElement>el.cloneNode(true);
-        
+
         /*
             @todo: Add dynamic styling
             @body: Move this into the parse engine
         */
         // Create Node for Style
         const existing = document.head.querySelector(`style#style-${this.componentName}`);
-        if (!existing) {
+        if (!existing && this.style) {
             // Create Style
-            if (this.style) {
-                const styleEl = document.createElement('style');
-                styleEl.id = `style-${this.constructor.name}`;
-                styleEl.innerHTML = this.style;
-                document.head.appendChild(styleEl);
-            }
+            const styleEl = document.createElement('style');
+            styleEl.id = `style-${this.componentName}`;
+            styleEl.innerHTML = this.style;
+            document.head.appendChild(styleEl);
         }
 
         // Load data into template
@@ -105,11 +103,11 @@ export abstract class Component {
 
     loadAll() {
         if (!this.element) {
-            console.warn(`${this.componentName} needs to be appended before loading.`);
+            console.error(`${this.componentName} needs to be appended before loading.`);
             return;
         }
 
-        this.children.forEach(ingredient => ingredient.load());
+        this.children.forEach(ingredient => ingredient.loadAll());
 
         // Load in decorated elements
         const els = getElements(this);
@@ -127,12 +125,8 @@ export abstract class Component {
     redraw() {
         // Remove 
         const oldEl = document.getElementById(this.id);
-        const newEl = this.engine.parseElements(this.ogNode,this.data);
-        if (oldEl) {
-            this.parent.replaceChild(newEl, oldEl);
-        } else {
-            this.parent.appendChild(newEl);
-        }
+        const newEl = this.engine.parseElements(this.ogNode, this.data);
+        this.parent.replaceChild(newEl, oldEl);
         this.parsedNode = newEl;
         this.element = document.getElementById(this.id);
     }

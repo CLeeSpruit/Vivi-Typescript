@@ -16,6 +16,8 @@ export interface ComponentMockOptions {
     data?: Object;
     hasElements?: boolean;
     elements?: Array<ViviElementParams>;
+    doNotLoad?: boolean;
+    doNotAppend?: boolean;
 }
 
 export class Mocker {
@@ -47,7 +49,9 @@ export class Mocker {
 
     createMock(options?: ComponentMockOptions): Component {
         const comp = this.getFactory().create();
+
         if (!options) {
+            comp.append();
             return comp;
         }
 
@@ -88,8 +92,10 @@ export class Mocker {
                 comp.template = this.defaultTemplate;
             }
         }
-        comp.append();
 
+        if (!options.doNotAppend) {
+            comp.append(null, options.doNotLoad);
+        }
         return comp;
     }
 
