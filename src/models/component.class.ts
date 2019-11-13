@@ -1,29 +1,36 @@
 import * as uuid from 'uuid';
 import { ApplicationListener, Listener } from '../events';
-import { ParseEngine } from './parse-engine.class';
 import { ApplicationEventService, ListenerOptions } from '../services/application-event.service';
 import { getElements } from '../decorators/element.decorator';
 import { ModuleFactory, ViviComponentFactory } from 'factory';
+import { ParseEngineService } from '../services/parse-engine.service';
+import { FactoryService } from '../services/factory.service';
 
 export abstract class Component {
     id: string;
     componentName: string;
     template: string;
     style: string;
+    data: Object;
     element: HTMLElement;
     ogNode: HTMLElement;
     parsedNode: HTMLElement;
     parent: HTMLElement;
-    listeners: Array<Listener | ApplicationListener> = new Array<Listener | ApplicationListener>();
-    appEvents: ApplicationEventService;
     children: Array<Component> = new Array<Component>();
-    data: Object;
+    listeners: Array<Listener | ApplicationListener> = new Array<Listener | ApplicationListener>();
+
+    // Default Services
+    factoryService: FactoryService;
+    appEvents: ApplicationEventService;
+    engine: ParseEngineService;
 
     constructor() {
         this.id = uuid();
 
         // Default Services
         this.appEvents = (<any>window).vivi.get(ApplicationEventService);
+        this.factoryService = (<any>window.vivi.get(FactoryService));
+        this.engine = (<any>window).vivi.get(ParseEngineService);
 
         // Set default parent
         this.parent = document.body;
@@ -76,9 +83,8 @@ export abstract class Component {
         }
 
         // Load data into template
-        const parsed = ParseEngine.parseNode(el, this.data);
-        this.parsedNode = parsed.el;
-        this.children.push(...parsed.recipe);
+        this.parsedNode = this.engine.parseElements(el, this.data)
+        this.children.push(...this.engine.parseComponents(el));
     }
 
     append(parent?: HTMLElement, doNotLoad?: boolean) {
@@ -120,12 +126,10 @@ export abstract class Component {
 
     redraw() {
         // Remove 
-        const newParse = ParseEngine.parseNode(this.ogNode, this.data);
-        const newEl = newParse.el;
-        const recipe = newParse.recipe;
-        const oldNode = document.getElementById(this.id);
-        if (oldNode) {
-            this.parent.replaceChild(newEl, oldNode);
+        const oldEl = document.getElementById(this.id);
+        const newEl = this.engine.parseElements(this.ogNode,this.data);
+        if (oldEl) {
+            this.parent.replaceChild(newEl, oldEl);
         } else {
             this.parent.appendChild(newEl);
         }

@@ -1,6 +1,4 @@
 import { Listener } from '../../events';
-import { MockComponent } from '../__mocks__/component.class';
-import { ParseEngine } from '../parse-engine.class';
 import { Mocker } from '../../meta/mocker';
 
 describe('Class: Component', () => {
@@ -11,12 +9,6 @@ describe('Class: Component', () => {
     });
 
     describe('Constructor', () => {
-        it('should init', () => {
-            const component = new MockComponent();
-
-            expect(component).toBeTruthy();
-        });
-
         it('should init via creator', () => {
             const component = mock.createMock();
 
@@ -189,8 +181,8 @@ describe('Class: Component', () => {
             component.append();
 
             const before = document.getElementById(component.id);
-            let expectedParse = ParseEngine.parseNode(component.ogNode, component.data);
-            expect(before).toEqual(expectedParse.el);
+            const expectedParse = component.engine.parseElements(component.ogNode, component.data);
+            expect(before).toEqual(expectedParse);
 
             component.redraw();
 

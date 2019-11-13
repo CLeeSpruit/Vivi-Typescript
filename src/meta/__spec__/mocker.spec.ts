@@ -1,4 +1,4 @@
-import { Component } from '../../models';
+import { Component } from '../../models/component.class';
 import { MockComponent } from '../../models/__mocks__/component.class';
 import { Mocker } from '../mocker';
 import { ViviElementParams } from '../../decorators';
@@ -112,6 +112,10 @@ describe('Mocker', () => {
             expect(comp).toBeTruthy();
             expect(comp[elements[0].propertyKey]).toBeTruthy();
             expect(comp[elements[1].propertyKey]).toBeTruthy();
+            expect(comp[elements[0].handlerFnName]).toBeTruthy();
+            expect(() => {
+                comp[elements[0].handlerFnName]();
+            }).not.toThrow();
         });
 
 

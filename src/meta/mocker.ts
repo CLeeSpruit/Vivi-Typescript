@@ -2,8 +2,8 @@ import { Component, ViviComponentConstructor } from '../models';
 import { ViviElementParams } from '../decorators';
 import { ModuleFactory, ViviComponentFactory } from '../factory';
 import { MockComponent } from '../models/__mocks__/component.class';
-import { EventTypes } from '../events';
 import { MockService } from '../models/__mocks__/service.class';
+import { loadViviServices } from '../services/load-services.static';
 
 export interface ComponentMockOptions {
     hasTemplate?: boolean;
@@ -34,7 +34,10 @@ export class Mocker {
     constructor() {
         this.module = new ModuleFactory({
             componentConstructors: this.defaultComponents,
-            serviceConstructors: [{ constructor: MockService }]
+            serviceConstructors: [
+                { constructor: MockService },
+                ...loadViviServices
+            ]
         });
     }
 

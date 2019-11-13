@@ -1,8 +1,10 @@
 import { ParseComponents } from '../components';
 import { Mocker } from '../../../meta/mocker';
+import { FactoryService } from '../../factory.service';
 
 describe('Component Parse Engine', () => {
     const mock = new Mocker();
+    const factory = mock.module.getFactory(FactoryService).get() as FactoryService;
 
     afterEach(() => {
         mock.clearMocks();
@@ -15,13 +17,13 @@ describe('Component Parse Engine', () => {
     });
 
     it('should init with module', () => {
-        const parse = new ParseComponents(mock.module);
+        const parse = new ParseComponents(factory);
 
         expect(parse).toBeTruthy();
     });
 
     describe('Parse Components', () => {
-        const parse = new ParseComponents(mock.module);
+        const parse = new ParseComponents(factory);
 
         it('should return empty list if there are no components', () => {
             const comp = mock.createMock({ hasChild: false });
