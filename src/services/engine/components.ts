@@ -11,10 +11,13 @@ export class ParseComponents {
         return this.createRecipe(el);
     }
 
-    parseComponentRedraw(el: HTMLElement, oldChildren: Array<Component>): Array<Component> {
-        // Find arr of parents
-        return oldChildren;
-    }
+    /*
+        @todo Implement Component Redraw
+    */
+    // parseComponentRedraw(el: HTMLElement, oldChildren: Array<Component>): Array<Component> {
+    //     // Find arr of parents
+    //     return oldChildren;
+    // }
 
     private createRecipe(node: HTMLElement): Array<Component> {
         const recipe = new Array<Component>();
