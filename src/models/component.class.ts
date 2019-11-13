@@ -49,7 +49,9 @@ export abstract class Component {
         } catch (e) {
             this.style = '';
         }
+    }
 
+    private createNode() {
         // Create Node that is named after the component class
         const el = document.createElement(this.componentName);
         el.id = this.id;
@@ -63,6 +65,7 @@ export abstract class Component {
     }
 
     append(parent?: HTMLElement, doNotLoad?: boolean) {
+        if (!this.ogNode) this.createNode();
         if (!parent) parent = document.body;
         parent.appendChild(this.parsedNode);
 
