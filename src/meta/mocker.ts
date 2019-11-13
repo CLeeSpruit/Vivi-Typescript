@@ -1,8 +1,9 @@
-import { Component } from '../models';
+import { Component, ViviComponentConstructor } from '../models';
 import { ViviElementParams } from '../decorators';
 import { ModuleFactory, ViviComponentFactory } from '../factory';
 import { MockComponent } from '../models/__mocks__/component.class';
 import { EventTypes } from '../events';
+import { MockService } from '../models/__mocks__/service.class';
 
 export interface ComponentMockOptions {
     hasTemplate?: boolean;
@@ -20,7 +21,7 @@ export interface ComponentMockOptions {
 export class Mocker {
     module: ModuleFactory;
     readonly defaultComponents = [
-        { constructor: MockComponent }
+        { constructor: MockComponent, services: [ MockService] }
     ];
     readonly defaultTemplate = '<span>Test</span>';
     readonly defaultStyle = '* { color: red }';
@@ -34,7 +35,8 @@ export class Mocker {
 
     constructor() {
         this.module = new ModuleFactory({
-            componentConstructors: this.defaultComponents
+            componentConstructors: this.defaultComponents,
+            serviceConstructors: [{ constructor: MockService }]
         });
     }
 
@@ -79,10 +81,10 @@ export class Mocker {
         if (options.hasElements || options.elements) {
             if (options.elements) {
                 Reflect.defineMetadata('ViviElement', options.elements, comp);
-                options.elements.forEach(element => comp[element.handlerFnName] = () => {});
+                options.elements.forEach(element => comp[element.handlerFnName] = () => { });
             } else {
                 Reflect.defineMetadata('ViviElement', [this.defaultElement], comp);
-                comp[this.defaultElement.handlerFnName] = () => {};
+                comp[this.defaultElement.handlerFnName] = () => { };
             }
         }
         comp.append();

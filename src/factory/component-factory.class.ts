@@ -8,28 +8,12 @@ export class ViviComponentFactory<T> {
         private constructor: new (...args) => Component,
         private services: Array<ViviServiceFactory<Service>> = new Array<ViviServiceFactory<Service>>()
     ) {
-        // Create an initial component to generate information from
-        const component = new this.constructor(...this.services.map(service => service.get()));
-
-        /*
-            @todo: Add dynamic styling
-            @body: Move this into the parse engine
-        */
-
-        // Create Style
-        if (component.style) {
-            const styleEl = document.createElement('style');
-            styleEl.id = `style-${this.constructor.name}`;
-            styleEl.innerHTML = component.style;
-            document.head.appendChild(styleEl);
-        }
-
-        // Cleanup fake data
-        component.destroy();
+        //
     }
 
     create(data?: Object): Component {
-        const component = new this.constructor(data, ...this.services.map(service => service.get()));
+        const component = new this.constructor(...this.services.map(service => service.get()));
+        component.data = data;
 
         this.components.set(component.id, component);
         return component;

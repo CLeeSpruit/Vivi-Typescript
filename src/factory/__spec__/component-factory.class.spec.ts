@@ -15,14 +15,6 @@ describe('Component Factory', () => {
         expect(mock).toBeTruthy();
     });
 
-    it('should append style to head if style is provided', () => {
-        const style = 'a { color: blue }'
-        const stylishMock = mock.createMock({ style });
-        const actual = document.getElementsByTagName('style');
-        expect(actual.length).toEqual(1);
-        expect(actual.item(0).innerHTML).toEqual(style);
-    });
-
     describe('create', () => {
         it('should create a new component and return that component', () => {
             const mock = new ViviComponentFactory<MockComponent>(MockComponent);
@@ -31,6 +23,12 @@ describe('Component Factory', () => {
 
             expect(component).toBeTruthy();
             expect(component instanceof MockComponent).toBeTruthy();
+        });
+
+        it('should create with services', () => {
+            const comp = mock.createMock() as MockComponent;
+
+            expect(comp.mockService).toBeTruthy();
         });
     });
 
@@ -84,6 +82,13 @@ describe('Component Factory', () => {
 
             const actual = mock.getFactory().get(comp.id);
             expect(actual).toBeFalsy();
+        });
+
+        it('should throw error if component does not exist', () => {
+            const errorSpy = spyOn(console, 'error');
+            mock.getFactory().destroy('blah blah');
+
+            expect(errorSpy).toHaveBeenCalled();
         });
     });
 });

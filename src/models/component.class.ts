@@ -17,8 +17,9 @@ export abstract class Component {
     listeners: Array<Listener | ApplicationListener> = new Array<Listener | ApplicationListener>();
     appEvents: ApplicationEventService;
     children: Array<Component> = new Array<Component>();
+    data: Object;
 
-    constructor(public data: Object = {}) {
+    constructor() {
         this.id = uuid();
 
         // Default Services
@@ -51,12 +52,28 @@ export abstract class Component {
         }
     }
 
-    private createNode() {
+    private createNodes() {
         // Create Node that is named after the component class
         const el = document.createElement(this.componentName);
         el.id = this.id;
         el.innerHTML = this.template;
         this.ogNode = <HTMLElement>el.cloneNode(true);
+        
+        /*
+            @todo: Add dynamic styling
+            @body: Move this into the parse engine
+        */
+        // Create Node for Style
+        const existing = document.head.querySelector(`style#style-${this.componentName}`);
+        if (!existing) {
+            // Create Style
+            if (this.style) {
+                const styleEl = document.createElement('style');
+                styleEl.id = `style-${this.constructor.name}`;
+                styleEl.innerHTML = this.style;
+                document.head.appendChild(styleEl);
+            }
+        }
 
         // Load data into template
         const parsed = ParseEngine.parseNode(el, this.data);
@@ -65,7 +82,7 @@ export abstract class Component {
     }
 
     append(parent?: HTMLElement, doNotLoad?: boolean) {
-        if (!this.ogNode) this.createNode();
+        if (!this.ogNode) this.createNodes();
         if (!parent) parent = document.body;
         parent.appendChild(this.parsedNode);
 
