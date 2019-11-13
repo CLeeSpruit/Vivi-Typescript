@@ -4,6 +4,10 @@ import { Mocker } from '../../../meta/mocker';
 describe('Component Parse Engine', () => {
     const mock = new Mocker();
 
+    afterEach(() => {
+        mock.clearMocks();
+    });
+
     it('should init', () => {
         const parse = new ParseComponents(null);
         
@@ -28,11 +32,19 @@ describe('Component Parse Engine', () => {
         });
 
         it('should return components of chilren', () => {
-            const comp = mock.createMock({ hasChild: true });
+            const comp = mock.createMock({ template: '<mock></mock>' });
 
             const actual = parse.parseComponents(comp.parsedNode);
 
             expect(actual.length).toBeTruthy();
+        });
+
+        it('should return multiple components of children', () => {
+            const comp = mock.createMock({ template: '<mock></mock><mock></mock>' });
+
+            const actual = parse.parseComponents(comp.parsedNode);
+
+            expect(actual.length).toEqual(2);
         });
     });
 });
