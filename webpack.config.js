@@ -1,5 +1,4 @@
 const path = require('path');
-const TsConfigPathWebpackPlugin = require('tsconfig-paths-webpack-plugin');
 
 const config = {
     entry: {
@@ -31,9 +30,6 @@ const config = {
     mode: 'production',
     devtool: 'source-map',
     resolve: {
-        plugins: [
-            new TsConfigPathWebpackPlugin({ configFile: path.join(__dirname, 'tsconfig.json') }),
-        ],
         modules: [
             path.resolve(__dirname, 'src'),
             'node_modules'
