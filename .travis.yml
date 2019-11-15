@@ -8,9 +8,11 @@ script:
   - codecov -f coverage/*.json
 jobs:
   include:
+    # Define the release stage that runs semantic-release
     - stage: release
-    deploy:
-      provider: script
-      skip_cleanup: true
-      script:
-        - npx semantic-release
+      node_js: lts/*
+      deploy:
+        provider: script
+        skip_cleanup: true
+        script:
+          - npx semantic-release
