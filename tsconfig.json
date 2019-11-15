@@ -9,6 +9,18 @@
         "declaration": true,
         "moduleResolution": "node",
         "declarationMap": true,
-        "emitDeclarationOnly": true
-    }
+        "emitDeclarationOnly": true,
+        "removeComments": true,
+    },
+    "include": [
+        "typings.d.ts",
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "src/**/*.spec.ts",
+        "src/**/__mock__/*",
+        "src/**/__spec__/*",
+        "src/meta/*"
+    ]
 }
