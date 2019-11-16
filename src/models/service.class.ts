@@ -1,4 +1,4 @@
-import * as shortId from 'shortid';
+import * as uuid from 'uuid';
 import { ApplicationListener, Listener } from '../events';
 
 export abstract class Service {
@@ -6,7 +6,7 @@ export abstract class Service {
     listeners: Array<Listener | ApplicationListener> = new Array<Listener | ApplicationListener>();
 
     constructor() {
-        this.id = shortId.generate();
+        this.id = uuid();
     }
 
     destroy() {

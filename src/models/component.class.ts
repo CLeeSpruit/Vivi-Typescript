@@ -1,4 +1,4 @@
-import * as shortId from 'shortid';
+import * as uuid from 'uuid';
 import { ApplicationListener, Listener } from '../events';
 import { ApplicationEventService, ListenerOptions } from '../services/application-event.service';
 import { getElements } from '../decorators/element.decorator';
@@ -26,7 +26,7 @@ export abstract class Component {
     engine: ParseEngineService;
 
     constructor() {
-        this.id = shortId.generate();
+        this.id = uuid();
 
         // Default Services
         this.appEvents = (<any>window).vivi.get(ApplicationEventService);
