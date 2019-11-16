@@ -9,12 +9,11 @@ const config = {
         __dirname: true,
         __filename: true
     },
-    devtool: 'inline-source-map',
     module: {
         rules: [{
             test: /\.ts$/,
             use: [{
-                loader: 'ts-loader',
+                loader: 'awesome-typescript-loader',
                 options: {
                     transpileOnly: true,
                     context: __dirname,
@@ -28,7 +27,6 @@ const config = {
         filename: '[name].js'
     },
     mode: 'production',
-    devtool: 'source-map',
     resolve: {
         modules: [
             path.resolve(__dirname, 'src'),

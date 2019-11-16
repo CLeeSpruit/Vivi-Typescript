@@ -9,7 +9,6 @@
         "declaration": true,
         "moduleResolution": "node",
         "declarationMap": true,
-        "emitDeclarationOnly": true,
         "removeComments": true,
     },
     "include": [
