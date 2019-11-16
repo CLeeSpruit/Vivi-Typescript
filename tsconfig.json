@@ -10,6 +10,7 @@
         "moduleResolution": "node",
         "declarationMap": true,
         "removeComments": true,
+        "esModuleInterop": true
     },
     "include": [
         "typings.d.ts",
