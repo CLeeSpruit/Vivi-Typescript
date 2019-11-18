@@ -9,6 +9,10 @@ export abstract class Service {
         this.id = v4();
     }
 
+    setData(id: number) {
+        this.id = `${this.constructor.name}-${id}`;
+    }
+
     destroy() {
         this.listeners.forEach(listener => {
             listener.remove();
