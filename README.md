@@ -11,13 +11,11 @@ A lightweight component-focused Javascript framework. Vivi is currently still in
 ---
 
 ## v3 Update:
-Milestone for v3 has started! Things to look forward to:
-- Dynamic loading for child components from the template
+v3 has been released! Some of the new changes:
+- Dynamic loading for child components from the template, like adding a list of components based off an array
 - Easier loading for child components from the component class
 - Lots of component and template-related bugfixes! Yay!
 - Smaller package size!
-
-Check out progress on the [milestones page](https://github.com/CassandraSpruit/Vivi/milestones).
 
 ---
 ## Installation and Gettings Started
