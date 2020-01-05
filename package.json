@@ -1,5 +1,5 @@
 {
-    "name": "@cspruit/vivi",
+    "name": "@cspruit/vivi-ts",
     "version": "4.1.9",
     "description": "A lightweight component-focused framework",
     "main": "dist/vivi.js",
@@ -9,7 +9,6 @@
     ],
     "scripts": {
         "build": "npm run flush && webpack-cli",
-        "build:test-env": "cd test-environment && npm run build && cd ../",
         "flush": "rm -r ./dist || true",
         "nuke": "rm -r ./node_modules",
         "test": "jest",
@@ -21,7 +20,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/CassandraSpruit/Vivi.git"
+        "url": "git+https://github.com/CassandraSpruit/Vivi-Typescript.git"
     },
     "keywords": [
         "framework",
@@ -31,9 +30,9 @@
     "author": "Cassandra Spruit",
     "license": "GPL-3.0-or-later",
     "bugs": {
-        "url": "https://github.com/CassandraSpruit/Vivi/issues"
+        "url": "https://github.com/CassandraSpruit/Vivi-Typescript/issues"
     },
-    "homepage": "https://github.com/CassandraSpruit/Vivi#readme",
+    "homepage": "https://github.com/CassandraSpruit/Vivi-Typescript#readme",
     "devDependencies": {
         "@semantic-release/changelog": "^3.0.6",
         "@semantic-release/git": "^7.0.18",

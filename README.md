@@ -4,7 +4,7 @@
 [![license](https://img.shields.io/github/license/CassandraSpruit/Vivi)](https://github.com/CassandraSpruit/Vivi-Typescript/blob/master/LICENSE)
 [![Greenkeeper badge](https://badges.greenkeeper.io/CassandraSpruit/Vivi.svg)](https://greenkeeper.io/)
 
-# Vivi
+# Vivi-Typescript
 
 A lightweight component-focused Typescript framework.
 

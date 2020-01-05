@@ -24,8 +24,8 @@ const config = {
         }]
     },
     output: {
-        filename: 'vivi.js',
-        library: 'vivi',
+        filename: 'vivi-ts.js',
+        library: 'vivi-ts',
         libraryTarget: 'umd'
     },
     devtool: 'source-map',
