@@ -34,7 +34,7 @@
     },
     "homepage": "https://github.com/CassandraSpruit/Vivi-Typescript#readme",
     "devDependencies": {
-        "@semantic-release/changelog": "^3.0.6",
+        "@semantic-release/changelog": "^5.0.0",
         "@semantic-release/git": "^7.0.18",
         "@types/jest": "^24.0.23",
         "@types/node": "^13.1.0",
